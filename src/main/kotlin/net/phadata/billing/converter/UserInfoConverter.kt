@@ -2,6 +2,7 @@ package net.phadata.billing.converter
 
 import net.phadata.billing.model.login.UserInfo
 import net.phadata.billing.model.po.SysUser
+import net.phadata.billing.model.register.RegisterRequest
 import org.mapstruct.Mapper
 
 
@@ -14,5 +15,5 @@ import org.mapstruct.Mapper
 @Mapper(componentModel = "spring")
 interface UserInfoConverter {
     fun toUserInfo(sysUser: SysUser): UserInfo
-
+    fun toSysUser(registerRequest: RegisterRequest): SysUser
 }

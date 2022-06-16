@@ -43,4 +43,10 @@ object AssertUtil {
             throw ServiceException(msg)
         }
     }
+
+    fun isEmpty(collection: Collection<Any?>?, msg: String) {
+        if (collection != null && !collection.isEmpty()) {
+            throw ServiceException(msg)
+        }
+    }
 }

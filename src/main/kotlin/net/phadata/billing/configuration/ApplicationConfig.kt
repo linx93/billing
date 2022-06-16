@@ -31,6 +31,7 @@ class ApplicationConfig : WebMvcConfigurer {
                 "/webjars/**",
                 "/swagger-resources/**",
                 "/api/v1/sys-user/login",
+                "/api/v1/sys-user/register",
             )
     }
 

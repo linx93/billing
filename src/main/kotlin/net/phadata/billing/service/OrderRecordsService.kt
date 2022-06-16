@@ -2,6 +2,13 @@ package net.phadata.billing.service;
 
 import net.phadata.billing.model.po.OrderRecords;
 import com.baomidou.mybatisplus.extension.service.IService;
+import net.phadata.billing.model.base.PageInfo
+import net.phadata.billing.model.excel.DownloadConsumer
+import net.phadata.billing.model.excel.DownloadOrder
+import net.phadata.billing.model.order.ConsumerQuery
+import net.phadata.billing.model.order.ConsumerQueryPage
+import net.phadata.billing.model.order.OrderQuery
+import net.phadata.billing.model.order.OrderResponse
 
 /**
  * <p>
@@ -11,4 +18,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author linx
  * @since 2022-06-13
  */
-interface OrderRecordsService : IService<OrderRecords>
+interface OrderRecordsService : IService<OrderRecords> {
+    fun listByOrderQuery(orderQuery: OrderQuery): List<DownloadOrder>
+    fun listByConsumerQuery(consumerQuery: ConsumerQuery): List<DownloadConsumer>
+    fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse>
+}

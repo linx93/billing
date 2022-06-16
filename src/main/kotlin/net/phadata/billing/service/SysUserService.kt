@@ -4,6 +4,7 @@ import net.phadata.billing.model.po.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.phadata.billing.model.login.LoginRequest
 import net.phadata.billing.model.login.LoginResponse
+import net.phadata.billing.model.register.RegisterRequest
 
 /**
  * <p>
@@ -15,4 +16,5 @@ import net.phadata.billing.model.login.LoginResponse
  */
 interface SysUserService : IService<SysUser> {
     fun login(loginRequest: LoginRequest): LoginResponse
+    fun register(registerRequest: RegisterRequest): Boolean
 }

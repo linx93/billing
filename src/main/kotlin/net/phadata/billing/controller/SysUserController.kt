@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.login.LoginRequest
 import net.phadata.billing.model.login.LoginResponse
+import net.phadata.billing.model.register.RegisterRequest
 import net.phadata.billing.service.SysUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.annotation.Validated
@@ -33,9 +34,16 @@ class SysUserController {
 
     @PostMapping("login")
     @ApiOperation(value = "登录", notes = "登录")
-    fun broadcastSignature(@RequestBody @Validated loginRequest: LoginRequest): ApiResult<LoginResponse?> {
+    fun login(@RequestBody @Validated loginRequest: LoginRequest): ApiResult<LoginResponse?> {
         val loginResponse: LoginResponse = sysUserService.login(loginRequest)
         return ApiResult.success(loginResponse)
+    }
+
+    @PostMapping("register")
+    @ApiOperation(value = "注册", notes = "注册")
+    fun register(@RequestBody @Validated registerRequest: RegisterRequest): ApiResult<Boolean?> {
+        val registerResponse = sysUserService.register(registerRequest)
+        return ApiResult.success(registerResponse)
     }
 }
 
