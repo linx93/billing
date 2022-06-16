@@ -1,0 +1,1 @@
+package net.phadata.billing.exceptionimport net.phadata.billing.constant.ResultCode/** * 授权异常 * @author linx * @since 2022-06-13 21:07 * */open class AuthException : BasicException {    constructor() : super(ResultCode.UNAUTHORIZED)}

@@ -1,0 +1,74 @@
+
+server:
+  port: 4396
+
+spring:
+  application:
+    name: billing-management-system
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_SERVER:192.168.1.100:3306}/billing_management_system?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      max-lifetime: 1800000
+
+  ## 上传文件大小限制
+  servlet:
+    multipart:
+      max-file-size: 32MB
+      max-request-size: 32MB
+  #Springboot2.6以后将SpringMVC 默认路径匹配策略从AntPathMatcher 更改为PathPatternParser，导致出错
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+
+mybatis-plus:
+  check-config-location: false
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+## swagger 文档配置
+knife4j:
+  enable: true
+  documents:
+    - group: 1.0
+      name: 自定义文档补充
+      locations: classpath:apidoc/** # 自定义文档
+  setting:
+    enableSwaggerModels: false
+    enableDocumentManage: true
+    enableHost: false
+    enableHostText: http://192.168.0.103:4396
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableDebug: true
+    enableSearch: false
+    enableOpenApi: false
+    enableAfterScript: false
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Apache License 2.0 | Copyright@2021-贵州天机信息科技
+  cors: false
+  production: false # 生产环境
+
+
+
+
+logging:
+  file:
+    name: ./logs/billing.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+  level:
+    net.phadata.billing: info
