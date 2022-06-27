@@ -14,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes
  */
 object CommonUtil {
     const val TOKEN = "Authorization"
+    const val BEARER = "Bearer "
 
     fun getCurrentToken(): String? {
         val requestAttributes =

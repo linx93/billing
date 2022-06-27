@@ -42,15 +42,15 @@ class ExcelController {
     fun downloadOrder(@RequestBody orderQuery: OrderQuery, response: HttpServletResponse) {
         val data: List<DownloadOrder> = orderRecordsService.listByOrderQuery(orderQuery)
         setHttpServletResponse("order_", response)
-        EasyExcel.write(response.outputStream, DownloadOrder::class.java).sheet("模板").doWrite(data)
+        EasyExcel.write(response.outputStream, DownloadOrder::class.java).sheet("订单").doWrite(data)
     }
 
     @ApiOperation(value = "导出客户excel", notes = "导出客户excel")
-    @PostMapping("download-consumer")
-    fun downloadConsumer(@RequestBody consumerQuery: ConsumerQuery, response: HttpServletResponse) {
+    @GetMapping("download-consumer")
+    fun downloadConsumer(consumerQuery: ConsumerQuery, response: HttpServletResponse) {
         val data: List<DownloadConsumer> = orderRecordsService.listByConsumerQuery(consumerQuery)
         setHttpServletResponse("consumer_", response)
-        EasyExcel.write(response.outputStream, DownloadConsumer::class.java).sheet("模板").doWrite(data)
+        EasyExcel.write(response.outputStream, DownloadConsumer::class.java).sheet("客户").doWrite(data)
     }
 
     fun setHttpServletResponse(name: String, response: HttpServletResponse) {

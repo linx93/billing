@@ -32,6 +32,8 @@ class ApplicationConfig : WebMvcConfigurer {
                 "/swagger-resources/**",
                 "/api/v1/sys-user/login",
                 "/api/v1/sys-user/register",
+                "/api/v1/excel/download-consumer",
+                "/api/v1/excel/download-order"
             )
     }
 

@@ -28,9 +28,12 @@ class TokenInterceptor : HandlerInterceptor {
 
         //判断开启token验证
         log.info("校验token开始")
-        val token = request.getHeader(CommonUtil.TOKEN)
+        var token = request.getHeader(CommonUtil.TOKEN)
         if (StringUtils.isBlank(token)) {
             throw ServiceException("token不能为空")
+        }
+        if (token.startsWith(CommonUtil.BEARER)) {
+             token = token.replace(CommonUtil.BEARER, "")
         }
         //验证过期时间
         if (JwtUtil.isExpiration(token)) {
