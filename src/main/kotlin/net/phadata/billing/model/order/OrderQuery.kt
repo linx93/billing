@@ -10,7 +10,7 @@ import net.phadata.billing.model.base.TimeRange
  * @since 2022-06-13 23:53
  *
  */
-class OrderQuery : Keyword() {
+open class OrderQuery : Keyword() {
 
     @ApiModelProperty(value = "时间范围条件")
     var timeRange: TimeRange? = null

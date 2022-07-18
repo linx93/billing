@@ -5,7 +5,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.base.PageInfo
-import net.phadata.billing.model.order.ConsumerQueryPage
+import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,10 +32,10 @@ class OrderRecordsController {
     @ApiOperation(value = "客户分页查询", notes = "订单分页查询")
     @PostMapping("order-page")
     fun consumerQueryPage(
-        @RequestBody consumerQueryPage: ConsumerQueryPage,
+        @RequestBody orderQueryPage: OrderQueryPage,
         response: HttpServletResponse
     ): ApiResult<PageInfo<OrderResponse>?> {
-        val pageInfo: PageInfo<OrderResponse> = orderRecordsService.pageByConsumerQueryPage(consumerQueryPage)
+        val pageInfo: PageInfo<OrderResponse> = orderRecordsService.pageByOrderQueryPage(orderQueryPage)
         return ApiResult.success(pageInfo)
     }
 }

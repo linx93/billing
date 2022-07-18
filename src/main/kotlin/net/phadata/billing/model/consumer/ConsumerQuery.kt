@@ -1,7 +1,7 @@
-package net.phadata.billing.model.order
+package net.phadata.billing.model.consumer
 
-import io.swagger.annotations.ApiModelProperty
 import net.phadata.billing.model.base.Keyword
+
 
 /**
  * 客户查询条件

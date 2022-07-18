@@ -57,7 +57,7 @@ knife4j:
     enableVersion: true
     enableFooter: false
     enableFooterCustom: true
-    footerCustomContent: Apache License 2.0 | Copyright@2021-贵州天机信息科技
+    footerCustomContent: Apache License 2.0 | Copyright@2021-贵州天机信息科技/api/v1/excel
   cors: false
   production: false # 生产环境
 

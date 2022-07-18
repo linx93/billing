@@ -5,7 +5,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.excel.DownloadConsumer
 import net.phadata.billing.model.excel.DownloadOrder
-import net.phadata.billing.model.order.ConsumerQuery
+import net.phadata.billing.model.consumer.ConsumerQuery
 import net.phadata.billing.model.order.OrderQuery
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,9 +33,9 @@ class ExcelController {
 
     /**
      * 文件下载（失败了会返回一个有部分数据的Excel）
-     * 1. 创建excel对应的实体对象 参照[DownloadData]
+     * 1. 创建excel对应的实体对象
      * 2. 设置返回的 参数
-     * 3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
+     * 3. 直接写，这里注意，finish的时候会自动关闭OutputStream
      */
     @ApiOperation(value = "导出订单excel", notes = "导出订单excel")
     @PostMapping("download-order")
@@ -53,7 +53,7 @@ class ExcelController {
         EasyExcel.write(response.outputStream, DownloadConsumer::class.java).sheet("客户").doWrite(data)
     }
 
-    fun setHttpServletResponse(name: String, response: HttpServletResponse) {
+    private fun setHttpServletResponse(name: String, response: HttpServletResponse) {
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
         response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         response.characterEncoding = "utf-8"
