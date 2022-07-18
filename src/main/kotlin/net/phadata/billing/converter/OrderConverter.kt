@@ -17,23 +17,26 @@ import org.mapstruct.Named
  *
  */
 @Mapper(componentModel = "spring")
-interface OrderConverter {
-    fun toDownloadOrder(orderRecords: OrderRecords): DownloadOrder
+abstract class OrderConverter {
+    abstract fun toDownloadOrder(orderRecords: OrderRecords): DownloadOrder
 
-    fun toDownloadOrderList(orderRecordsList: List<OrderRecords>): List<DownloadOrder>
+    abstract fun toDownloadOrderList(orderRecordsList: List<OrderRecords>): List<DownloadOrder>
 
     @Mappings(
-        Mapping(source = "orderRecords.billingStatus", target = "billingStatus", qualifiedByName = arrayOf("parseBillingStatus")),
+        value = [
+            //Mapping(target = "description",ignore = true),
+            Mapping(source = "orderRecords.billingStatus", target = "billingStatus", qualifiedByName = ["parseBillingStatus"])
+        ]
     )
-    fun toDownloadConsumer(orderRecords: OrderRecords): DownloadConsumer
+    abstract fun toDownloadConsumer(orderRecords: OrderRecords): DownloadConsumer
 
-    fun toDownloadConsumerList(orderRecords: List<OrderRecords>): List<DownloadConsumer>
+    abstract fun toDownloadConsumerList(orderRecords: List<OrderRecords>): List<DownloadConsumer>
 
-    fun toOrderResponse(records: List<OrderRecords>): List<OrderResponse>
+    abstract fun toOrderResponse(records: List<OrderRecords>): List<OrderResponse>
 
 
     @Named("parseBillingStatus")
-    fun parseBillingStatus(billingStatus: Int): String? {
+    protected fun parseBillingStatus(billingStatus: Int): String? {
         //开票状态[0：未开票、1：开票中、2：已开票]
         return when (billingStatus) {
             0 -> "未开票"
