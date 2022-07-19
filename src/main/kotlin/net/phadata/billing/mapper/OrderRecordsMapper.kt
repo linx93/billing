@@ -2,8 +2,7 @@ package net.phadata.billing.mapper;
 
 import net.phadata.billing.model.po.OrderRecords;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import net.phadata.billing.model.consumer.ConsumerQueryPage
-import net.phadata.billing.model.consumer.ConsumerResponse
+import net.phadata.billing.model.statistics.DonutChart
 import org.apache.ibatis.annotations.Mapper
 
 /**
@@ -16,6 +15,8 @@ import org.apache.ibatis.annotations.Mapper
  */
 @Mapper
 interface OrderRecordsMapper : BaseMapper<OrderRecords> {
+    fun platformPayProp(): List<DonutChart>
+    fun payAmountProp(): List<DonutChart>
     //fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): List<ConsumerResponse>
     //fun total(consumerQueryPage: ConsumerQueryPage): Int
 }

@@ -16,6 +16,7 @@ import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.model.order.OrderQuery
 import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
+import net.phadata.billing.model.statistics.DonutChart
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service;
@@ -146,6 +147,17 @@ open class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecord
             this.total = total
             this.records = slice
         }
+    }
+
+    /**
+     * 本月各平台付费占比
+     */
+    override fun platformPayProp(): List<DonutChart> {
+        return getBaseMapper().platformPayProp()
+    }
+
+    override fun payAmountProp(): List<DonutChart> {
+        return getBaseMapper().payAmountProp()
     }
 
 }

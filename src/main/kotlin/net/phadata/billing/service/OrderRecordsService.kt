@@ -11,6 +11,7 @@ import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.model.order.OrderQuery
 import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
+import net.phadata.billing.model.statistics.DonutChart
 
 /**
  * <p>
@@ -25,4 +26,6 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun pageByOrderQueryPage(orderQueryPage: OrderQueryPage): PageInfo<OrderResponse>
     fun listByConsumerQuery(consumerQuery: ConsumerQuery): List<DownloadConsumer>
     fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<ConsumerResponse>
+    fun platformPayProp(): List<DonutChart>
+    fun payAmountProp(): List<DonutChart>
 }

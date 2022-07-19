@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.phadata.billing.mapper.OrderRecordsMapper">
-<!--    <select id="pageByConsumerQueryPage" resultType="net.phadata.billing.model.consumer.ConsumerResponse"
-            parameterType="net.phadata.billing.model.consumer.ConsumerQueryPage">
-        SELECT IFNULL(sum(amount),0)          as amountSum,
-               consumer_name         as consumerName,
-               consumer_company_code as consumerCompanyCode
-        FROM order_records
-        WHERE
-        GROUP BY consumer_code;
-        LIMIT #{consumerQueryPage.page.},
-    </select>
-    <select id="total" parameterType="net.phadata.billing.model.consumer.ConsumerQueryPage">
-        SELECT COUNT(1)
-        FROM order_records
-        WHERE
+    <!--    <select id="pageByConsumerQueryPage" resultType="net.phadata.billing.model.consumer.ConsumerResponse"
+                parameterType="net.phadata.billing.model.consumer.ConsumerQueryPage">
+            SELECT IFNULL(sum(amount),0)          as amountSum,
+                   consumer_name         as consumerName,
+                   consumer_company_code as consumerCompanyCode
+            FROM order_records
+            WHERE
+            GROUP BY consumer_code;
+            LIMIT #{consumerQueryPage.page.},
+        </select>
+        <select id="total" parameterType="net.phadata.billing.model.consumer.ConsumerQueryPage">
+            SELECT COUNT(1)
+            FROM order_records
+            WHERE
 
-        GROUP BY consumer_code;
-    </select>-->
+            GROUP BY consumer_code;
+        </select>-->
+
+
+    <select id="platformPayProp" resultType="net.phadata.billing.model.statistics.DonutChart">
+
+    </select>
+
+    <select id="payAmountProp" resultType="net.phadata.billing.model.statistics.DonutChart">
+
+    </select>
 </mapper>
