@@ -25,6 +25,9 @@ class OrderResponse {
     @ApiModelProperty(value = "客户名称")
     var consumerName: String? = null
 
+    @ApiModelProperty(value = "客户企业社会统一信用代码，开普票的时候使用")
+    var consumerCompanyCode: String? = null
+
     @ApiModelProperty(value = "开票状态[0：未开票、1：开票中、2：已开票]")
     var billingStatus: Int? = null
 

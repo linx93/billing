@@ -1,7 +1,6 @@
 package net.phadata.billing.model.excel
 
 import com.alibaba.excel.annotation.ExcelProperty
-import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 
 /**

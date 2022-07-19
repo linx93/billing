@@ -1,5 +1,6 @@
 package net.phadata.billing.converter
 
+import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.model.excel.DownloadConsumer
 import net.phadata.billing.model.excel.DownloadOrder
 import net.phadata.billing.model.order.OrderResponse
@@ -34,6 +35,7 @@ abstract class OrderConverter {
 
     abstract fun toOrderResponse(records: List<OrderRecords>): List<OrderResponse>
 
+    abstract fun toConsumerResponse(records: List<OrderRecords>): List<ConsumerResponse>
 
     @Named("parseBillingStatus")
     protected fun parseBillingStatus(billingStatus: Int): String? {

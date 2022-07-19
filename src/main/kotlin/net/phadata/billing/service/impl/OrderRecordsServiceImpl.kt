@@ -1,6 +1,5 @@
 package net.phadata.billing.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import net.phadata.billing.model.po.OrderRecords;
@@ -20,6 +19,8 @@ import net.phadata.billing.model.order.OrderResponse
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal
+import kotlin.math.ceil
 
 /**
  * <p>
@@ -95,16 +96,55 @@ open class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecord
             OrderRecords::consumerName,
             consumerQueryPage.keyword
         )
-        val total = getBaseMapper().selectCount(like)
+        val groupBy = getBaseMapper().selectList(like).groupBy(OrderRecords::consumerName)
+        val consumerResponseList = mutableListOf<ConsumerResponse>()
+        groupBy.forEach { element ->
+            var amountSum = BigDecimal("0")
+            var consumerName: String? = ""
+            var consumerCompanyCode: String? = ""
+            element.value.forEach { item ->
+                amountSum = amountSum.add(item.amount)
+                consumerName = item.consumerName
+                consumerCompanyCode = item.consumerCompanyCode
+            }
+            consumerResponseList.add(ConsumerResponse().apply {
+                this.consumerName = consumerName
+                this.consumerCompanyCode = consumerCompanyCode
+                this.amountSum = amountSum
+            })
+        }
+        //分页计算
+        var total = consumerResponseList.size
+        var pageSize = consumerQueryPage.page.size
+        var current = consumerQueryPage.page.current - 1
+        //一共的页数
+        var pageTotal = ceil(total.toDouble() / pageSize).toInt()
+        if (pageTotal > 0) {
+            pageTotal -= 1
+        }
+        var to: Int = if (total % pageSize == 0) {
+            current * pageSize + pageSize
+        } else {
+            if (current >= pageTotal) {
+                current * pageSize + (total % pageSize)
+            } else {
+                current * pageSize + pageSize
+            }
+        }
+        val start: Int = current * pageSize
+        if (current >= pageTotal) {
 
-        val groupBy = getBaseMapper().selectList(like)
-
-        var list: List<ConsumerResponse> = getBaseMapper().pageByConsumerQueryPage(consumerQueryPage)
+        }
+        val slice = if (current >= pageTotal) {
+            arrayListOf<ConsumerResponse>()
+        } else {
+            consumerResponseList.slice(IntRange(start, to - 1))
+        }
         return PageInfo<ConsumerResponse>().apply {
-            current = consumerQueryPage.page.current
-            size = consumerQueryPage.page.size
+            this.current = current + 1
+            this.size = pageSize
             this.total = total
-            records = list
+            this.records = slice
         }
     }
 

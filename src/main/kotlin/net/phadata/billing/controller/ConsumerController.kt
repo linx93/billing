@@ -5,8 +5,8 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.base.PageInfo
-import net.phadata.billing.model.order.OrderQueryPage
-import net.phadata.billing.model.order.OrderResponse
+import net.phadata.billing.model.consumer.ConsumerQueryPage
+import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,20 +23,20 @@ import javax.servlet.http.HttpServletResponse
  * @author linx
  * @since 2022-06-13
  */
-@Api(tags = ["订单相关"], description = "订单相关")
+@Api(tags = ["客户相关"], description = "客户相关")
 @RestController
-@RequestMapping("/api/v1/order-records")
-class OrderRecordsController {
+@RequestMapping("/api/v1/consumer")
+class ConsumerController {
     @Autowired
     lateinit var orderRecordsService: OrderRecordsService
 
-    @ApiOperation(value = "订单分页查询", notes = "订单分页查询")
+    @ApiOperation(value = "客户分页查询", notes = "客户分页查询")
     @PostMapping("page")
     fun consumerQueryPage(
-        @RequestBody orderQueryPage: OrderQueryPage,
+        @RequestBody consumerQueryPage: ConsumerQueryPage,
         response: HttpServletResponse
-    ): ApiResult<PageInfo<OrderResponse>?> {
-        val pageInfo: PageInfo<OrderResponse> = orderRecordsService.pageByOrderQueryPage(orderQueryPage)
+    ): ApiResult<PageInfo<ConsumerResponse>> {
+        val pageInfo = orderRecordsService.pageByConsumerQueryPage(consumerQueryPage)
         return ApiResult.success(pageInfo)
     }
 }

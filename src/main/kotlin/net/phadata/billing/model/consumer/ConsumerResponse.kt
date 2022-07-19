@@ -11,10 +11,6 @@ import java.math.BigDecimal
  *
  */
 class ConsumerResponse {
-    @ApiModelProperty(value = "订单id")
-    var orderId: String? = null
-
-
     @ApiModelProperty(value = "金额")
     var amountSum: BigDecimal? = null
 

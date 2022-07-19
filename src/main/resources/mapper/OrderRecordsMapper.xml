@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="net.phadata.billing.mapper.OrderRecordsMapper">
-    <select id="pageByConsumerQueryPage" resultType="net.phadata.billing.model.consumer.ConsumerResponse"
+<!--    <select id="pageByConsumerQueryPage" resultType="net.phadata.billing.model.consumer.ConsumerResponse"
             parameterType="net.phadata.billing.model.consumer.ConsumerQueryPage">
         SELECT IFNULL(sum(amount),0)          as amountSum,
                consumer_name         as consumerName,
@@ -17,5 +17,5 @@
         WHERE
 
         GROUP BY consumer_code;
-    </select>
+    </select>-->
 </mapper>

@@ -18,8 +18,12 @@ class ApiResult<T> private constructor() {
         private set
 
     companion object {
-        fun <T> success(payload: T): ApiResult<T?> {
-            return buildApiResult(ResultCode.SUCCESS.code, ResultCode.SUCCESS.msg, payload)
+        fun <T> success(payload: T): ApiResult<T> {
+            val apiResult = ApiResult<T>()
+            apiResult.code = ResultCode.SUCCESS.code
+            apiResult.message = ResultCode.SUCCESS.msg
+            apiResult.payload = payload
+            return apiResult
         }
 
         fun <T> fail(payload: T?): ApiResult<T?> {

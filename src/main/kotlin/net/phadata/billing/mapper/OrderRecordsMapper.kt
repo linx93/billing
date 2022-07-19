@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper
  */
 @Mapper
 interface OrderRecordsMapper : BaseMapper<OrderRecords> {
-    fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): List<ConsumerResponse>
-    fun total(consumerQueryPage: ConsumerQueryPage): Int
+    //fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): List<ConsumerResponse>
+    //fun total(consumerQueryPage: ConsumerQueryPage): Int
 }
 
