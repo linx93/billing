@@ -103,6 +103,12 @@
             <artifactId>easyexcel</artifactId>
             <version>3.1.1</version>
         </dependency>
+        <!--   minio 相关依赖 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.3.7</version>
+        </dependency>
     </dependencies>
 
     <build>

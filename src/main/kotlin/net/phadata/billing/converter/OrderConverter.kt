@@ -4,6 +4,7 @@ import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.model.excel.DownloadConsumer
 import net.phadata.billing.model.excel.DownloadOrder
 import net.phadata.billing.model.order.OrderResponse
+import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.model.po.OrderRecords
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
@@ -36,6 +37,8 @@ abstract class OrderConverter {
     abstract fun toOrderResponse(records: List<OrderRecords>): List<OrderResponse>
 
     abstract fun toConsumerResponse(records: List<OrderRecords>): List<ConsumerResponse>
+
+    abstract fun toOrderRecords(orderSaveRequest:OrderSaveRequest):OrderRecords
 
     @Named("parseBillingStatus")
     protected fun parseBillingStatus(billingStatus: Int): String? {

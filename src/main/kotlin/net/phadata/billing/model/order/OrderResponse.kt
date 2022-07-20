@@ -1,10 +1,13 @@
 package net.phadata.billing.model.order
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 
 class OrderResponse {
     @ApiModelProperty(value = "主键")
+    @JsonSerialize(using = ToStringSerializer::class)
     var id: Long? = null
 
     @ApiModelProperty(value = "订单id")

@@ -72,3 +72,10 @@ logging:
       max-file-size: 5MB
   level:
     net.phadata.billing: info
+
+#minio配置
+minio:
+  endpoint: https://oss.tdaas.dev.phadata.net/
+  accessKey: admin
+  secretKey: 12345678
+  bucketName: test

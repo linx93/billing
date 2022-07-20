@@ -3,6 +3,7 @@ package net.phadata.billing.service;
 import net.phadata.billing.model.po.OrderRecords;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.phadata.billing.model.base.PageInfo
+import net.phadata.billing.model.billing.ConfirmBillingRequest
 import net.phadata.billing.model.excel.DownloadConsumer
 import net.phadata.billing.model.excel.DownloadOrder
 import net.phadata.billing.model.consumer.ConsumerQuery
@@ -11,7 +12,9 @@ import net.phadata.billing.model.consumer.ConsumerResponse
 import net.phadata.billing.model.order.OrderQuery
 import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
+import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.model.statistics.DonutChart
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * <p>
@@ -28,4 +31,7 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<ConsumerResponse>
     fun platformPayProp(): List<DonutChart>
     fun payAmountProp(): List<DonutChart>
+    fun saveOrder(orderSaveRequest: OrderSaveRequest): Boolean
+    fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean
+    fun upload(file: MultipartFile, id: Long): Boolean
 }
