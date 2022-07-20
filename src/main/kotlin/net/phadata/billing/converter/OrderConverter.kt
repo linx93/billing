@@ -19,16 +19,16 @@ import org.mapstruct.Named
  */
 @Mapper(componentModel = "spring")
 abstract class OrderConverter {
+    @Mappings(
+        value = [
+            Mapping(target = "billingUrl",ignore = true),
+            Mapping(source = "orderRecords.billingStatus", target = "billingStatus", qualifiedByName = ["parseBillingStatus"])
+        ]
+    )
     abstract fun toDownloadOrder(orderRecords: OrderRecords): DownloadOrder
 
     abstract fun toDownloadOrderList(orderRecordsList: List<OrderRecords>): List<DownloadOrder>
 
-    @Mappings(
-        value = [
-            //Mapping(target = "description",ignore = true),
-            Mapping(source = "orderRecords.billingStatus", target = "billingStatus", qualifiedByName = ["parseBillingStatus"])
-        ]
-    )
     abstract fun toDownloadConsumer(orderRecords: OrderRecords): DownloadConsumer
 
     abstract fun toDownloadConsumerList(orderRecords: List<OrderRecords>): List<DownloadConsumer>

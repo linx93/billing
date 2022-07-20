@@ -133,9 +133,6 @@ open class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecord
             }
         }
         val start: Int = current * pageSize
-        if (current >= pageTotal) {
-
-        }
         val slice = if (current >= pageTotal) {
             arrayListOf<ConsumerResponse>()
         } else {

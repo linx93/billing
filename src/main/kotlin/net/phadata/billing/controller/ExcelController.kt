@@ -46,8 +46,8 @@ class ExcelController {
     }
 
     @ApiOperation(value = "导出客户excel", notes = "导出客户excel")
-    @GetMapping("download-consumer")
-    fun downloadConsumer(consumerQuery: ConsumerQuery, response: HttpServletResponse) {
+    @PostMapping("download-consumer")
+    fun downloadConsumer(@RequestBody consumerQuery: ConsumerQuery, response: HttpServletResponse) {
         val data: List<DownloadConsumer> = orderRecordsService.listByConsumerQuery(consumerQuery)
         setHttpServletResponse("consumer_", response)
         EasyExcel.write(response.outputStream, DownloadConsumer::class.java).sheet("客户").doWrite(data)

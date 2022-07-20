@@ -42,6 +42,8 @@ class OrderRecords : Serializable {
     var consumerCode: String? = null
     @ApiModelProperty(value = "开票状态[0：未开票、1：开票中、2：已开票]")
     var billingStatus: Int? = null
+    @ApiModelProperty(value = "支付类型")
+    var billingUrl: String? = null
     @ApiModelProperty(value = "客户企业社会统一信用代码，开普票的时候使用")
     var consumerCompanyCode: String? = null
     @ApiModelProperty(value = "支付类型")
@@ -62,6 +64,7 @@ class OrderRecords : Serializable {
         ", consumerName=" + consumerName +
         ", consumerCode=" + consumerCode +
         ", billingStatus=" + billingStatus +
+        ", billingUrl=" + billingUrl +
         ", consumerCompanyCode=" + consumerCompanyCode +
         ", payType=" + payType +
         "}"
