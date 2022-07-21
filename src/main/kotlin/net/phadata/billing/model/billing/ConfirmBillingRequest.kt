@@ -17,5 +17,5 @@ class ConfirmBillingRequest {
 
     @NotNull(message = "开具状态通知地址不能为空")
     @ApiModelProperty(value = "开具状态通知地址")
-    var notifyUrl: String? = null
+    var notifyUrl: String = ""
 }

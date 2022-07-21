@@ -11,6 +11,7 @@ import net.phadata.billing.exception.ClientException
 import net.phadata.billing.mapper.OrderRecordsMapper
 import net.phadata.billing.model.base.PageInfo
 import net.phadata.billing.model.billing.ConfirmBillingRequest
+import net.phadata.billing.model.billing.NotifyBillingRequest
 import net.phadata.billing.model.consumer.ConsumerQuery
 import net.phadata.billing.model.consumer.ConsumerQueryPage
 import net.phadata.billing.model.consumer.ConsumerResponse
@@ -22,11 +23,13 @@ import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.model.po.OrderRecords
 import net.phadata.billing.model.statistics.DonutChart
+import net.phadata.billing.network.BillingServerApi
 import net.phadata.billing.service.OrderRecordsService
 import net.phadata.billing.utils.MinioUtil
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.Instant
@@ -51,6 +54,10 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
 
     @Autowired
     lateinit var minioUtil: MinioUtil
+
+    @Autowired
+    lateinit var billingServerApi: BillingServerApi
+
     override fun listByOrderQuery(orderQuery: OrderQuery): List<DownloadOrder> {
         val ktQueryWrapper = KtQueryWrapper(OrderRecords()).eq(
             StringUtils.isNotBlank(orderQuery.platformCode), OrderRecords::platformCode, orderQuery.platformCode
@@ -204,17 +211,24 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         return saveOrUpdate(orderRecords)
     }
 
-    override fun upload(file: MultipartFile, id: Long): Boolean {
+    @Transactional
+    override fun upload(file: MultipartFile, id: Long): Boolean? {
         //1. 上传
         val url = upload(file)
         //2. 更新地址到db
         val byId = getById(id)
         byId.updateTime = Instant.now().epochSecond
         byId.billingUrl = url
-        saveOrUpdate(byId)
-        //3. 通知更新开票状态
-        val notifyUrl = byId.notifyUrl
-        return true
+        if (saveOrUpdate(byId)) {
+            //3. 通知更新开票状态
+            val notifyUrl = byId.notifyUrl
+            return billingServerApi.notifyBilling(notifyUrl, NotifyBillingRequest().apply {
+                byId.orderId
+                BillingStatusEnum.INVOICED.code
+                byId.notifyUrl
+            })
+        }
+        return false
     }
 
 
