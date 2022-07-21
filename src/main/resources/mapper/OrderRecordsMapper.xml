@@ -21,10 +21,14 @@
 
 
     <select id="platformPayProp" resultType="net.phadata.billing.model.statistics.DonutChart">
-
+        select IFNULL(SUM(amount), 0) as `value`, platform_name as `name`
+        from order_records
+        group by platform_code
     </select>
 
     <select id="payAmountProp" resultType="net.phadata.billing.model.statistics.DonutChart">
-
+        select IFNULL(SUM(amount), 0) as `value`, amount as `name`
+        from order_records
+        group by amount
     </select>
 </mapper>

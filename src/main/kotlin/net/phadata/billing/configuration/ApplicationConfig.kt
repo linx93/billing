@@ -31,8 +31,8 @@ class ApplicationConfig : WebMvcConfigurer {
                 "/favicon.ico",
                 "/webjars/**",
                 "/swagger-resources/**",
-                "/api/v1/sys-user/login",
-                "/api/v1/sys-user/register",
+                "/api/v1/sys/login",
+                "/api/v1/sys/register",
                 "/api/v1/excel/download-consumer",
                 "/api/v1/excel/download-order"
             )

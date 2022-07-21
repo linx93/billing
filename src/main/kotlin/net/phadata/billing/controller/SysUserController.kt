@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author linx
  * @since 2022-06-13
  */
-@Api
+@Api(tags = ["登录"], description = "登录")
 @RestController
-@RequestMapping("/api/v1/sys-user")
+@RequestMapping("/api/v1/sys")
 class SysUserController {
     @Autowired
     private lateinit var sysUserService: SysUserService
