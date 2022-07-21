@@ -260,6 +260,19 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         return true
     }
 
+    override fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse> {
+        val selectPage = getBaseMapper().selectPage(
+            Page(consumerQueryPage.page.current.toLong(), consumerQueryPage.page.size.toLong()),
+            KtQueryWrapper(OrderRecords()).eq(OrderRecords::consumerName, consumerQueryPage.keyword)
+        )
+        return PageInfo<OrderResponse>().apply {
+            current = selectPage.current.toInt()
+            size = selectPage.size.toInt()
+            total = selectPage.total.toInt()
+            records = orderConverter.toOrderResponse(selectPage.records)
+        }
+    }
+
     private fun updateFailStatus(id: Long?, status: Int) {
         getBaseMapper().updateById(OrderRecords().apply {
             this.id = id

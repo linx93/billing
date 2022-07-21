@@ -34,4 +34,5 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun saveOrder(orderSaveRequest: OrderSaveRequest): Boolean
     fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean
     fun upload(file: MultipartFile, id: Long): Boolean
+    fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse>
 }
