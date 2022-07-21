@@ -4,10 +4,7 @@ package net.phadata.billing.controller.foreignservice;
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
-import net.phadata.billing.model.base.PageInfo
 import net.phadata.billing.model.billing.ConfirmBillingRequest
-import net.phadata.billing.model.order.OrderQueryPage
-import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +25,7 @@ import javax.validation.Valid
 @Api(tags = ["对外服务"], description = "对外服务")
 @RestController
 @RequestMapping("/api/v1/foreign-service")
-class OrderRecordsController {
+class OrderController {
     @Autowired
     lateinit var orderRecordsService: OrderRecordsService
 

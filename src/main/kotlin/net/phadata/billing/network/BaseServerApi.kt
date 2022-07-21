@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate
  * @since 2022-07-21 09:41
  *
  */
-@Component
+//@Component
 abstract class BaseServerApi {
     @Autowired
     lateinit var restTemplate: RestTemplate

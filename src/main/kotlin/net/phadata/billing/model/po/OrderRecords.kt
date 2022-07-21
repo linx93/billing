@@ -55,8 +55,11 @@ class OrderRecords : Serializable {
     @ApiModelProperty(value = "开票状态[0：未开票、1：开票中、2：已开票]")
     var billingStatus: Int? = null
 
-    @ApiModelProperty(value = "票据状态回调地址")
+    @ApiModelProperty(value = "票据状态通知地址")
     var notifyUrl: String = ""
+
+    @ApiModelProperty(value = "票据状态通知状态[0:未通知 1通知成功 2:通知失败]")
+    var notifyStatus: Int = 0
 
     @ApiModelProperty(value = "票据地址")
     var billingUrl: String? = null

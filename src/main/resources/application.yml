@@ -70,7 +70,20 @@ logging:
     rollingpolicy:
       max-file-size: 5MB
   level:
-    net.phadata.billing: info
+    org:
+      apache:
+        coyote:
+          http11:
+            Http11InputBuffer: debug
+      springframework:
+        web:
+          method:
+            HandlerMethod: trace
+          servlet:
+            DispatcherServlet: trace
+            mvc:
+              method:
+                annotation: trace
 
 #minio配置
 minio:

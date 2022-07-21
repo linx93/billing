@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "minio")
 class MinioClientConfig {
-     val endpoint: String? = null
-     val accessKey: String? = null
-     val secretKey: String? = null
-     val bucketName: String? = null
+    var endpoint: String? = null
+    var accessKey: String? = null
+    var secretKey: String? = null
+    var bucketName: String? = null
 
     /**
      * 注入minio 客户端

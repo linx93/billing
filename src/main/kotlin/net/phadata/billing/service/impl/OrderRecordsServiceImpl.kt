@@ -23,10 +23,11 @@ import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.model.po.OrderRecords
 import net.phadata.billing.model.statistics.DonutChart
-import net.phadata.billing.network.BillingServerApi
 import net.phadata.billing.service.OrderRecordsService
+import net.phadata.billing.task.AsyncNotifyBillingTask
 import net.phadata.billing.utils.MinioUtil
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,7 +35,9 @@ import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.math.ceil
+
 
 /**
  * <p>
@@ -46,6 +49,8 @@ import kotlin.math.ceil
  */
 @Service
 class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(), OrderRecordsService {
+    private val log = LoggerFactory.getLogger(OrderRecordsServiceImpl::class.java)
+
     @Autowired
     lateinit var orderConverter: OrderConverter
 
@@ -56,7 +61,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     lateinit var minioUtil: MinioUtil
 
     @Autowired
-    lateinit var billingServerApi: BillingServerApi
+    lateinit var asyncNotifyBillingTask: AsyncNotifyBillingTask
 
     override fun listByOrderQuery(orderQuery: OrderQuery): List<DownloadOrder> {
         val ktQueryWrapper = KtQueryWrapper(OrderRecords()).eq(
@@ -212,23 +217,54 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     @Transactional
-    override fun upload(file: MultipartFile, id: Long): Boolean? {
-        //1. 上传
-        val url = upload(file)
-        //2. 更新地址到db
-        val byId = getById(id)
-        byId.updateTime = Instant.now().epochSecond
-        byId.billingUrl = url
-        if (saveOrUpdate(byId)) {
-            //3. 通知更新开票状态
-            val notifyUrl = byId.notifyUrl
-            return billingServerApi.notifyBilling(notifyUrl, NotifyBillingRequest().apply {
-                byId.orderId
-                BillingStatusEnum.INVOICED.code
-                byId.notifyUrl
-            })
+    override fun upload(file: MultipartFile, id: Long): Boolean {
+        CompletableFuture.supplyAsync {
+            //1. 上传
+            return@supplyAsync upload(file)
+        }.thenCombine(CompletableFuture.supplyAsync {
+            //2. 查询
+            return@supplyAsync getById(id)
+        }) { url: String, byId: OrderRecords ->
+            byId.updateTime = Instant.now().epochSecond
+            byId.billingUrl = url
+            //默认成功
+            byId.notifyStatus = 2
+            //更新db
+            val saveOrUpdate = saveOrUpdate(byId)
+            if (saveOrUpdate) {
+                //通知
+                val notifyUrl = byId.notifyUrl
+                //3. 通知更新开票状态
+                val apply = NotifyBillingRequest().apply {
+                    byId.orderId
+                    BillingStatusEnum.INVOICED.code
+                    byId.billingUrl
+                }
+                try {
+                    val notifyResult = asyncNotifyBillingTask.notifyBilling(notifyUrl, apply)
+                    if (notifyResult) {
+                        log.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
+                    } else {
+                        log.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+                        //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
+                        updateFailStatus(byId.id, 2)
+                    }
+                } catch (e: Exception) {
+                    //请求失败
+                    log.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+                    //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
+                    updateFailStatus(byId.id, 2)
+                }
+            }
         }
-        return false
+        return true
+    }
+
+    private fun updateFailStatus(id: Long?, status: Int) {
+        getBaseMapper().updateById(OrderRecords().apply {
+            this.id = id
+            this.notifyStatus = status
+        })
     }
 
 
