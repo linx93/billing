@@ -3,6 +3,7 @@ package net.phadata.billing.controller;
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import net.phadata.app.common.TjPlatformEnum
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.base.PageInfo
 import net.phadata.billing.model.order.OrderQueryPage
@@ -39,6 +40,15 @@ class OrderRecordsController {
     }
 
 
+    @ApiOperation(value = "天机各平台列表", notes = "天机各平台列表")
+    @PostMapping("platform-list")
+    fun platformList(): ApiResult<Map<String, String>> {
+        val mapOf = mutableMapOf<String, String>()
+        TjPlatformEnum.values().forEach { tjPlatformEnum ->
+            mapOf[tjPlatformEnum.code] = tjPlatformEnum.getName()
+        }
+        return ApiResult.success(mapOf);
+    }
 
 
 }

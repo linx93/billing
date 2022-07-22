@@ -4,6 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.statistics.DonutChart
+import net.phadata.billing.model.statistics.Polyline
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -40,17 +41,17 @@ class StatisticsController {
 
     @ApiOperation(value = "各平台付费趋势", notes = "各平台付费趋势")
     @GetMapping("platform-pay-trend")
-    fun platformPayTrend(): ApiResult<Any> {
-        //val data: List<DonutChart> = orderRecordsService.platformPayTrend()
-        //todo 各平台付费趋势
-        return ApiResult.success("null")
+    fun platformPayTrend(): ApiResult<Polyline> {
+        val data: Polyline = orderRecordsService.platformPayTrend()
+        return ApiResult.success(data)
     }
 
     @ApiOperation(value = "付费客户数量趋势", notes = "付费客户数量趋势")
     @GetMapping("pay-customer-trend")
-    fun payCustomerTrend(): ApiResult<Any> {
+    fun payCustomerTrend(): ApiResult<Polyline> {
         //todo 付费客户数量趋势
-        return ApiResult.success("data")
+        val data: Polyline = orderRecordsService.payCustomerTrend()
+        return ApiResult.success(data)
     }
 
 

@@ -114,7 +114,29 @@
             <artifactId>okhttp</artifactId>
             <version>4.9.0</version>
         </dependency>
+        <!--phadata common-->
+        <dependency>
+            <groupId>net.phadata.app</groupId>
+            <artifactId>phadata-java-common</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>maven-public</id>
+            <name>maven-public</name>
+            <url>https://nexus.phadata.net/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>

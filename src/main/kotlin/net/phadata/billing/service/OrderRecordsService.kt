@@ -14,6 +14,7 @@ import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.model.statistics.DonutChart
+import net.phadata.billing.model.statistics.Polyline
 import org.springframework.web.multipart.MultipartFile
 
 /**
@@ -35,4 +36,6 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean
     fun upload(file: MultipartFile, id: Long): Boolean
     fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse>
+    fun platformPayTrend(): Polyline
+    fun payCustomerTrend(): Polyline
 }

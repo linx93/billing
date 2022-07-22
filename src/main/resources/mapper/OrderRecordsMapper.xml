@@ -31,4 +31,31 @@
         from order_records
         group by amount
     </select>
+
+    <select id="platformGroup" resultType="net.phadata.billing.model.statistics.IdText">
+        select platform_code as `id`, platform_name as `text`
+        from order_records
+        group by platform_code
+    </select>
+
+    <select id="platformPayTrend" resultType="net.phadata.billing.model.statistics.CommonVO">
+        select FROM_UNIXTIME(create_time, '%Y-%m') AS `date`,
+               IFNULL(SUM(amount), 0)              as `value`
+        from order_records
+        where platform_name = #{platformText}
+          and date_sub(curdate(), INTERVAL 6 MONTH) &lt;= date (FROM_UNIXTIME(create_time))
+        GROUP BY
+            FROM_UNIXTIME( create_time, '%Y-%m' )
+    </select>
+
+
+    <select id="payCustomerTrend" resultType="net.phadata.billing.model.statistics.CommonVO">
+        select FROM_UNIXTIME(create_time, '%Y-%m') AS `date`,
+               IFNULL(COUNT(1), 0)                 as `value`
+        from order_records
+        where platform_name = #{platformText}
+          and date_sub(curdate(), INTERVAL 6 MONTH) &lt;= date (FROM_UNIXTIME(create_time))
+        GROUP BY
+            FROM_UNIXTIME( create_time, '%Y-%m' )
+    </select>
 </mapper>
