@@ -10,7 +10,7 @@ import net.phadata.billing.constant.ResultCode
  *
  */
 class ApiResult<T> private constructor() {
-    var code: Int = ResultCode.FAILED.code
+    var code: String = ResultCode.FAILED.code
         private set
     var message: String? = null
         private set
@@ -38,15 +38,15 @@ class ApiResult<T> private constructor() {
             return buildApiResult(resultCode.code, resultCode.msg, null)
         }
 
-        fun <T> result(code: Int, message: String, payload: T?): ApiResult<T?> {
+        fun <T> result(code: String, message: String, payload: T?): ApiResult<T?> {
             return buildApiResult(code, message, payload)
         }
 
-        fun <T> result(code: Int, message: String?): ApiResult<T?> {
+        fun <T> result(code: String, message: String?): ApiResult<T?> {
             return buildApiResult<T?>(code, message, null)
         }
 
-        private fun <T> buildApiResult(code: Int, message: String?, payload: T?): ApiResult<T?> {
+        private fun <T> buildApiResult(code: String, message: String?, payload: T?): ApiResult<T?> {
             val apiResult = ApiResult<T?>()
             apiResult.code = code
             apiResult.message = message

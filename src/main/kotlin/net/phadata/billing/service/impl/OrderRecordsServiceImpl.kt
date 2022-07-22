@@ -49,7 +49,6 @@ import kotlin.math.ceil
  */
 @Service
 class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(), OrderRecordsService {
-    private val log = LoggerFactory.getLogger(OrderRecordsServiceImpl::class.java)
 
     @Autowired
     lateinit var orderConverter: OrderConverter

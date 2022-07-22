@@ -2,11 +2,15 @@ package net.phadata.billing.service.impl;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
+import net.phadata.billing.constant.ResultCode
 import net.phadata.billing.converter.UserInfoConverter
+import net.phadata.billing.exception.ClientException
 import net.phadata.billing.utils.AssertUtil
 import net.phadata.billing.mapper.SysUserMapper
 import net.phadata.billing.model.login.LoginRequest
 import net.phadata.billing.model.login.LoginResponse
+import net.phadata.billing.model.login.ModifyPassword
+import net.phadata.billing.model.login.UserInfo
 import net.phadata.billing.model.po.SysUser
 import net.phadata.billing.model.register.RegisterRequest
 import net.phadata.billing.service.SysUserService
@@ -61,6 +65,18 @@ class SysUserServiceImpl : ServiceImpl<SysUserMapper, SysUser>(), SysUserService
         }
         //insert
         getBaseMapper().insert(apply)
+        return true
+    }
+
+    override fun modifyPassword(modifyPassword: ModifyPassword): Boolean? {
+        val info = JwtUtil.getInfo(UserInfo::class.java)
+        val userId = info.userId
+        if (!modifyPassword.confirmPassword.equals(modifyPassword.newPassword)) {
+            throw ClientException(ResultCode.PARAMETER_VALIDATION_ERROR.code, "新密码和确认密码不一致")
+        }
+        getBaseMapper().update(SysUser().apply {
+            this.password = modifyPassword.newPassword
+        }, KtQueryWrapper(SysUser()).eq(SysUser::userId, userId))
         return true
     }
 

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation
 import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.login.LoginRequest
 import net.phadata.billing.model.login.LoginResponse
+import net.phadata.billing.model.login.ModifyPassword
 import net.phadata.billing.model.register.RegisterRequest
 import net.phadata.billing.service.SysUserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author linx
  * @since 2022-06-13
  */
-@Api(tags = ["登录"], description = "登录")
+@Api(tags = ["系统操作"], description = "系统操作")
 @RestController
 @RequestMapping("/api/v1/sys")
 class SysUserController {
@@ -44,6 +45,13 @@ class SysUserController {
     fun register(@RequestBody @Validated registerRequest: RegisterRequest): ApiResult<Boolean?> {
         val registerResponse = sysUserService.register(registerRequest)
         return ApiResult.success(registerResponse)
+    }
+
+    @PostMapping("modify-password")
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    fun modifyPassword(@RequestBody @Validated modifyPassword: ModifyPassword): ApiResult<Boolean?> {
+        val result = sysUserService.modifyPassword(modifyPassword)
+        return ApiResult.success(result)
     }
 }
 

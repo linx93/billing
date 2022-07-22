@@ -10,7 +10,7 @@ import net.phadata.billing.constant.ResultCode
  *
  */
 abstract class BasicException : RuntimeException {
-    var code: Int = ResultCode.FAILED.code
+    var code: String = ResultCode.FAILED.code
         protected set
 
     constructor()
@@ -18,7 +18,7 @@ abstract class BasicException : RuntimeException {
     constructor(s: String?, throwable: Throwable?) : super(s, throwable)
     constructor(throwable: Throwable?) : super(throwable)
 
-    constructor(code: Int, msg: String) : super(msg) {
+    constructor(code: String, msg: String) : super(msg) {
         this.code = code
     }
 
