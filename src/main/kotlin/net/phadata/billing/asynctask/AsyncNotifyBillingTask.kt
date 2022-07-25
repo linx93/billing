@@ -1,12 +1,10 @@
-package net.phadata.billing.task
+package net.phadata.billing.asynctask
 
-import net.phadata.billing.constant.BillingStatusEnum
 import net.phadata.billing.model.billing.NotifyBillingRequest
 import net.phadata.billing.network.BillingServerApi
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import java.util.concurrent.CompletableFuture
 
 
 /**

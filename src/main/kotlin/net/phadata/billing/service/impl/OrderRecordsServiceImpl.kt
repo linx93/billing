@@ -26,9 +26,11 @@ import net.phadata.billing.model.statistics.DonutChart
 import net.phadata.billing.model.statistics.Polyline
 import net.phadata.billing.model.statistics.SeriesData
 import net.phadata.billing.service.OrderRecordsService
-import net.phadata.billing.task.AsyncNotifyBillingTask
+import net.phadata.billing.asynctask.AsyncNotifyBillingTask
+import net.phadata.billing.schedule.BillingStatusSchedule
 import net.phadata.billing.utils.MinioUtil
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -50,6 +52,8 @@ import kotlin.math.ceil
  */
 @Service
 class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(), OrderRecordsService {
+
+    private val loggger = LoggerFactory.getLogger(OrderRecordsServiceImpl::class.java)
 
     @Autowired
     lateinit var orderConverter: OrderConverter
@@ -186,6 +190,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     override fun saveOrder(orderSaveRequest: OrderSaveRequest): Boolean {
+        loggger.info("同步订单请求:${orderSaveRequest}")
         val orderId = orderSaveRequest.orderId
         if (getBaseMapper().selectList(KtQueryWrapper(OrderRecords()).eq(OrderRecords::orderId, orderId))
                 .isNotEmpty()
@@ -193,10 +198,12 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
             throw ClientException(ResultCode.DATA_ALREADY_EXISTS)
         }
         val orderRecords = orderConverter.toOrderRecords(orderSaveRequest)
+
         return save(orderRecords)
     }
 
     override fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean {
+        loggger.info("确认开票请求:${confirmBillingRequest}")
         val selectList = getBaseMapper().selectList(
             KtQueryWrapper(OrderRecords()).eq(
                 OrderRecords::orderId,
@@ -243,15 +250,15 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
                 try {
                     val notifyResult = asyncNotifyBillingTask.notifyBilling(notifyUrl, apply)
                     if (notifyResult) {
-                        log.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
+                        loggger.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
                     } else {
-                        log.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+                        loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
                         //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
                         updateFailStatus(byId.id, 2)
                     }
                 } catch (e: Exception) {
                     //请求失败
-                    log.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+                    loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
                     //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
                     updateFailStatus(byId.id, 2)
                 }
