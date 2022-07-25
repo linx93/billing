@@ -57,4 +57,29 @@ class Polyline {
         LocalDate.now().plusMonths(-months.toLong())
         return list
     }
+
+
+    fun buildSeriesDataList(
+        seriesDataList: MutableList<SeriesData>,
+        it: String,
+        resultData: List<CommonVO>
+    ) {
+        val initMonthList = this.initMonthList(6)
+        initMonthList.forEach { init ->
+            resultData.forEach { data ->
+                if (init.date.equals(data.date)) {
+                    init.value = data.value
+                }
+            }
+        }
+        val seriesData = SeriesData()
+        val valueList: MutableList<Double> = mutableListOf()
+        initMonthList.forEach { commonVO ->
+            valueList.add(commonVO.value)
+        }
+        seriesData.data = valueList
+        seriesData.name = it
+        seriesDataList.add(seriesData)
+    }
+
 }

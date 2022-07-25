@@ -27,7 +27,6 @@ import net.phadata.billing.model.statistics.Polyline
 import net.phadata.billing.model.statistics.SeriesData
 import net.phadata.billing.service.OrderRecordsService
 import net.phadata.billing.asynctask.AsyncNotifyBillingTask
-import net.phadata.billing.schedule.BillingStatusSchedule
 import net.phadata.billing.utils.MinioUtil
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -289,27 +288,13 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         val seriesDataList = mutableListOf<SeriesData>()
         list.forEach {
             val result = baseMapper.platformPayTrend(it)
-            val initMonthList = polyline.initMonthList(6)
-            initMonthList.forEach { init ->
-                result.forEach { data ->
-                    if (init.date.equals(data.date)) {
-                        init.value = data.value
-                    }
-                }
-            }
-            val seriesData = SeriesData()
-            val valueList: MutableList<Double> = mutableListOf()
-            initMonthList.forEach { commonVO ->
-                valueList.add(commonVO.value)
-            }
-            seriesData.data = valueList
-            seriesData.name = it
-            seriesDataList.add(seriesData)
+            polyline.buildSeriesDataList(seriesDataList, it, result)
         }
         polyline.series = seriesDataList
         polyline.xAxisData = polyline.getMonthList(6)
         return polyline
     }
+
 
     override fun payCustomerTrend(): Polyline {
         val baseMapper = getBaseMapper()
@@ -320,22 +305,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         val seriesDataList = mutableListOf<SeriesData>()
         list.forEach {
             val result = baseMapper.payCustomerTrend(it)
-            val initMonthList = polyline.initMonthList(6)
-            initMonthList.forEach { init ->
-                result.forEach { data ->
-                    if (init.date.equals(data.date)) {
-                        init.value = data.value
-                    }
-                }
-            }
-            val seriesData = SeriesData()
-            val valueList: MutableList<Double> = mutableListOf()
-            initMonthList.forEach { commonVO ->
-                valueList.add(commonVO.value)
-            }
-            seriesData.data = valueList
-            seriesData.name = it
-            seriesDataList.add(seriesData)
+            polyline.buildSeriesDataList(seriesDataList, it, result)
         }
         polyline.series = seriesDataList
         polyline.xAxisData = polyline.getMonthList(6)
