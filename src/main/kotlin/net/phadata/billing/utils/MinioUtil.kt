@@ -39,6 +39,7 @@ class MinioUtil {
     @Autowired
     private lateinit var minioClient: MinioClient
 
+    @Autowired
     private lateinit var minioClientConfig: MinioClientConfig
 
     /**

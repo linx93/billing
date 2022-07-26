@@ -9,12 +9,14 @@ import net.phadata.billing.model.base.PageInfo
 import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
+import net.phadata.billing.model.po.OrderRecords
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse
 
@@ -38,6 +40,13 @@ class OrderRecordsController {
     fun consumerQueryPage(@RequestBody orderQueryPage: OrderQueryPage): ApiResult<PageInfo<OrderResponse>?> {
         val pageInfo: PageInfo<OrderResponse> = orderRecordsService.pageByOrderQueryPage(orderQueryPage)
         return ApiResult.success(pageInfo)
+    }
+
+    @ApiOperation(value = "根据主键id查询", notes = "根据主键id查询")
+    @GetMapping("find")
+    fun getById(@RequestParam id: Long): ApiResult<OrderRecords> {
+        val byId = orderRecordsService.getById(id)
+        return ApiResult.success(byId)
     }
 
 

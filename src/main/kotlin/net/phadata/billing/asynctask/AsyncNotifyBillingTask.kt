@@ -19,7 +19,8 @@ class AsyncNotifyBillingTask {
     lateinit var billingServerApi: BillingServerApi
 
 
-    @Async
+    //【不要异步了，直接同步】
+    //@Async
     fun notifyBilling(notifyUrl: String?, notifyBillingRequest: NotifyBillingRequest): Boolean {
         return billingServerApi.notifyBilling(notifyUrl, notifyBillingRequest) == true
     }

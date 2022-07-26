@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class BillingServerApiImpl : BaseServerApi(), BillingServerApi {
 
-    private val url = "api/v1/runtime/service/container/start"
+    private val url = ""
 
     @Value("\${account-platform.address}")
     var address = ""
