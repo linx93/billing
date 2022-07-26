@@ -27,6 +27,7 @@ import net.phadata.billing.model.statistics.Polyline
 import net.phadata.billing.model.statistics.SeriesData
 import net.phadata.billing.service.OrderRecordsService
 import net.phadata.billing.asynctask.AsyncNotifyBillingTask
+import net.phadata.billing.exception.ServiceException
 import net.phadata.billing.utils.MinioUtil
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -292,42 +293,46 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         return polyline
     }
 
+    //@Transactional
     override fun confirmNotify(id: Long): Boolean {
         val byId = getBaseMapper().selectById(id)
         //通知
         val notifyUrl = byId.notifyUrl
         byId.notifyStatus = 1
+        byId.billingStatus = 2
         updateById(byId)
         //3. 通知更新开票状态
         val apply = NotifyBillingRequest().apply {
-            byId.orderId
-            BillingStatusEnum.INVOICED.code
-            byId.billingUrl
+            this.orderId = byId.orderId
+            this.billingStatus = BillingStatusEnum.INVOICED.code
+            this.billingUrl = byId.billingUrl
         }
         try {
             val notifyResult = asyncNotifyBillingTask.notifyBilling(notifyUrl, apply)
             if (notifyResult) {
-                loggger.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
+                loggger.info("SUCCESS-通知数字账户更新开票状态成功:${apply}")
             } else {
                 loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
                 //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
-                updateFailStatus(byId.id, 2)
+                getBaseMapper().updateById(OrderRecords().apply {
+                    this.id = id
+                    this.notifyStatus = 2
+                })
+                throw ServiceException("ERROR-通知数字账户更新开票状态失败:${apply}")
             }
         } catch (e: Exception) {
             //请求失败
-            loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+            loggger.error("ERROR-通知数字账户更新开票状态失败:${e.localizedMessage}")
             //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
-            updateFailStatus(byId.id, 2)
+            getBaseMapper().updateById(OrderRecords().apply {
+                this.id = id
+                this.notifyStatus = 2
+            })
+            throw ServiceException("ERROR-通知数字账户更新开票状态失败:${apply}")
         }
         return true
     }
 
-    private fun updateFailStatus(id: Long?, status: Int) {
-        getBaseMapper().updateById(OrderRecords().apply {
-            this.id = id
-            this.notifyStatus = status
-        })
-    }
 
 
     private fun upload(file: MultipartFile): String {

@@ -42,7 +42,7 @@ abstract class BaseServerApi {
         } else address + str + url
     }
 
-    fun <T> buildApiResult(responseStr: String, type: Class<T>): ApiResult<T> {
+    fun <T> buildApiResult(responseStr: String?, type: Class<T>): ApiResult<T> {
         val apiResult: ApiResult<T> = JSONObject.parseObject(
             responseStr,
             object : TypeReference<ApiResult<T>>(type) {},

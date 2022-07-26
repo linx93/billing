@@ -1,5 +1,6 @@
 package net.phadata.billing.network.impl
 
+import net.phadata.billing.exception.ServiceException
 import net.phadata.billing.model.billing.NotifyBillingRequest
 import net.phadata.billing.network.BaseServerApi
 import net.phadata.billing.network.BillingServerApi
@@ -26,7 +27,15 @@ class BillingServerApiImpl : BaseServerApi(), BillingServerApi {
     }
 
     override fun notifyBilling(url: String?, params: NotifyBillingRequest): Boolean? {
-        return url?.let { restTemplate.postForObject(it, params, Boolean::class.java) }
+        if (url == null) {
+            throw ServiceException("url为空")
+        }
+        val resultStr = restTemplate.postForObject(url, params, String::class.java)
+        val buildApiResult = buildApiResult(resultStr, Boolean::class.java)
+        if (buildApiResult.code != "200000") {
+            throw ServiceException("通知失败:${buildApiResult}")
+        }
+        return buildApiResult.payload
     }
 
 
