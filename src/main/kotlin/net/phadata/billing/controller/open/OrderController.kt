@@ -1,4 +1,4 @@
-package net.phadata.billing.controller.foreignservice;
+package net.phadata.billing.controller.open;
 
 
 import io.swagger.annotations.Api
@@ -24,7 +24,7 @@ import javax.validation.Valid
  */
 @Api(tags = ["对外服务"], description = "对外服务")
 @RestController
-@RequestMapping("/api/v1/foreign-service")
+@RequestMapping("/open/v1/order")
 class OrderController {
     @Autowired
     lateinit var orderRecordsService: OrderRecordsService

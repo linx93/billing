@@ -25,8 +25,8 @@ class BillingServerApiImpl : BaseServerApi(), BillingServerApi {
         return this.notifyBilling(buildUrl(address, url), params)
     }
 
-    override fun notifyBilling(url: String, params: NotifyBillingRequest): Boolean? {
-        return restTemplate.postForObject(url, params, Boolean::class.java)
+    override fun notifyBilling(url: String?, params: NotifyBillingRequest): Boolean? {
+        return url?.let { restTemplate.postForObject(it, params, Boolean::class.java) }
     }
 
 

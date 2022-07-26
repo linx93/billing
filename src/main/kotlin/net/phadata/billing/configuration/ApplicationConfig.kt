@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.DbType
 import com.baomidou.mybatisplus.core.toolkit.Sequence
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor
+import net.phadata.billing.interceptor.AuthCenterInterceptor
 import net.phadata.billing.interceptor.TokenInterceptor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -36,6 +36,9 @@ class ApplicationConfig : WebMvcConfigurer {
                 "/api/v1/excel/download-consumer",
                 "/api/v1/excel/download-order"
             )
+        registry.addInterceptor(AuthCenterInterceptor())
+            .addPathPatterns("/open/v1/**")
+            .excludePathPatterns()
     }
 
     /**

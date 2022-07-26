@@ -9,13 +9,10 @@ import net.phadata.billing.constant.ResultCode
  * @since 2022-06-13 21:07
  *
  */
-class ApiResult<T> private constructor() {
+class ApiResult<T> {
     var code: String = ResultCode.FAILED.code
-        private set
     var message: String? = null
-        private set
     var payload: T? = null
-        private set
 
     companion object {
         fun <T> success(payload: T): ApiResult<T> {
@@ -54,4 +51,9 @@ class ApiResult<T> private constructor() {
             return apiResult
         }
     }
+
+    override fun toString(): String {
+        return "ApiResult(code='$code', message=$message, payload=$payload)"
+    }
+
 }

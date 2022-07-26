@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiModelProperty;
 class OrderRecords : Serializable {
 
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     var id: Long? = null
 
     @ApiModelProperty(value = "订单id")
@@ -56,10 +56,10 @@ class OrderRecords : Serializable {
     var billingStatus: Int? = null
 
     @ApiModelProperty(value = "票据状态通知地址")
-    var notifyUrl: String = ""
+    var notifyUrl: String? = null
 
     @ApiModelProperty(value = "票据状态通知状态[0:未通知 1通知成功 2:通知失败]")
-    var notifyStatus: Int = 0
+    var notifyStatus: Int? = null
 
     @ApiModelProperty(value = "票据地址")
     var billingUrl: String? = null

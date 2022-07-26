@@ -96,3 +96,16 @@ minio:
 #数字账户服务
 account-platform:
   address: http://192.168.0.22:9020
+
+#鉴权中心-本地杰哥的服务
+authCenter:
+  server: http://192.168.0.254:8080
+  appKey: casncaa87d5qkavaer6g
+  appSecret: casncai87d5qkavaer70
+
+
+##鉴权中心（线上测试）
+#authCenter:
+#  checkTokenUrl: https://auth.tdaas.test.phadata.net/serverurl
+#  appKey: c6eqeg86n88ntl74pet0
+#  appSecret: c6eqeg86n88ntl74pesg

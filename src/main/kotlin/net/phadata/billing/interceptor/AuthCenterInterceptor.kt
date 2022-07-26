@@ -1,10 +1,12 @@
 package net.phadata.billing.interceptor
 
 import net.phadata.billing.exception.ServiceException
+import net.phadata.billing.utils.AuthCenterUtil
 import net.phadata.billing.utils.CommonUtil
-import net.phadata.billing.utils.JwtUtil
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
@@ -12,34 +14,30 @@ import javax.servlet.http.HttpServletResponse
 
 
 /**
- * token校验拦截器
+ * 鉴权中心token校验
  * @author linx
- * @since 2022-06-14 00:34
+ * @since 2022-07-25 14:33
  *
  */
-class TokenInterceptor : HandlerInterceptor {
-    private val log = LoggerFactory.getLogger(TokenInterceptor::class.java)
+@Component
+class AuthCenterInterceptor : HandlerInterceptor {
+    //@Autowired
+
+    private val log = LoggerFactory.getLogger(AuthCenterInterceptor::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         // 如果不是映射到方法直接通过
         if (handler !is HandlerMethod) {
             return super.preHandle(request, response, handler)
         }
+        // 获取httpServletRequest中携带的授权中心颁发的token
+        var authToken: String? = request.getHeader(AuthCenterUtil.token)
+        if (StringUtils.isBlank(authToken)) {
+            log.error("token不能为空")
+            //throw ServiceException("token不能为空")
+        }
+        //去鉴权中校验token
 
-        //判断开启token验证
-        log.info("校验token开始")
-        var token = request.getHeader(CommonUtil.TOKEN)
-        if (StringUtils.isBlank(token)) {
-            throw ServiceException("token不能为空")
-        }
-        if (token.startsWith(CommonUtil.BEARER)) {
-             token = token.replace(CommonUtil.BEARER, "")
-        }
-        //验证过期时间
-        if (JwtUtil.isExpiration(token)) {
-            throw ServiceException("登陆已过期，请重新登陆")
-        }
-        log.info("校验token结束")
         return super.preHandle(request, response, handler)
     }
 }

@@ -19,7 +19,7 @@ interface BillingServerApi {
     /**
      * 通知开票成功
      */
-    fun notifyBilling(url: String, params: NotifyBillingRequest): Boolean?
+    fun notifyBilling(url: String?, params: NotifyBillingRequest): Boolean?
 
 
 }

@@ -22,8 +22,12 @@ import org.mapstruct.Named
 abstract class OrderConverter {
     @Mappings(
         value = [
-            Mapping(target = "billingUrl",ignore = true),
-            Mapping(source = "orderRecords.billingStatus", target = "billingStatus", qualifiedByName = ["parseBillingStatus"])
+            Mapping(target = "billingUrl", ignore = true),
+            Mapping(
+                source = "orderRecords.billingStatus",
+                target = "billingStatus",
+                qualifiedByName = ["parseBillingStatus"]
+            )
         ]
     )
     abstract fun toDownloadOrder(orderRecords: OrderRecords): DownloadOrder
@@ -38,10 +42,10 @@ abstract class OrderConverter {
 
     abstract fun toConsumerResponse(records: List<OrderRecords>): List<ConsumerResponse>
 
-    abstract fun toOrderRecords(orderSaveRequest:OrderSaveRequest):OrderRecords
+    abstract fun toOrderRecords(orderSaveRequest: OrderSaveRequest): OrderRecords
 
     @Named("parseBillingStatus")
-    protected fun parseBillingStatus(billingStatus: Int): String? {
+    protected fun parseBillingStatus(billingStatus: Int): String {
         //开票状态[0：未开票、1：开票中、2：已开票]
         return when (billingStatus) {
             0 -> "未开票"

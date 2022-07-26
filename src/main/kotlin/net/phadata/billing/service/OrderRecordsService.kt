@@ -38,4 +38,5 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse>
     fun platformPayTrend(): Polyline
     fun payCustomerTrend(): Polyline
+    fun confirmNotify(id: Long): Boolean
 }

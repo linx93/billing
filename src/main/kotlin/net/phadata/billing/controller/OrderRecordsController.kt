@@ -11,6 +11,7 @@ import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.model.order.OrderSaveRequest
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,13 +42,17 @@ class OrderRecordsController {
 
 
     @ApiOperation(value = "天机各平台列表", notes = "天机各平台列表")
-    @PostMapping("platform-list")
-    fun platformList(): ApiResult<Map<String, String>> {
-        val mapOf = mutableMapOf<String, String>()
+    @GetMapping("platform-list")
+    fun platformList(): ApiResult<List<Map<String, String>>> {
+        val listOf = mutableListOf<Map<String, String>>()
         TjPlatformEnum.values().forEach { tjPlatformEnum ->
-            mapOf[tjPlatformEnum.code] = tjPlatformEnum.getName()
+            val mapOf = mutableMapOf<String, String>()
+            //mapOf[tjPlatformEnum.code] = tjPlatformEnum.getName()
+            mapOf["code"] = tjPlatformEnum.code
+            mapOf["name"] = tjPlatformEnum.getName()
+            listOf.add(mapOf)
         }
-        return ApiResult.success(mapOf);
+        return ApiResult.success(listOf)
     }
 
 

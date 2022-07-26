@@ -67,7 +67,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     lateinit var asyncNotifyBillingTask: AsyncNotifyBillingTask
 
     override fun listByOrderQuery(orderQuery: OrderQuery): List<DownloadOrder> {
-        val ktQueryWrapper = KtQueryWrapper(OrderRecords()).eq(
+        val ktQueryWrapper = KtQueryWrapper(OrderRecords::class.java).eq(
             StringUtils.isNotBlank(orderQuery.platformCode), OrderRecords::platformCode, orderQuery.platformCode
         ).and(StringUtils.isNotBlank(orderQuery.keyword)) {
             it.like(
@@ -85,7 +85,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     override fun pageByOrderQueryPage(orderQueryPage: OrderQueryPage): PageInfo<OrderResponse> {
-        val ktQueryWrapper = KtQueryWrapper(OrderRecords()).eq(
+        val ktQueryWrapper = KtQueryWrapper(OrderRecords::class.java).eq(
             StringUtils.isNotBlank(orderQueryPage.platformCode), OrderRecords::platformCode, orderQueryPage.platformCode
         ).and(StringUtils.isNotBlank(orderQueryPage.keyword)) {
             it.like(
@@ -113,7 +113,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     override fun listByConsumerQuery(consumerQuery: ConsumerQuery): List<DownloadConsumer> {
-        val like = KtQueryWrapper(OrderRecords()).like(
+        val like = KtQueryWrapper(OrderRecords::class.java).like(
             consumerQuery.keyword != null,
             OrderRecords::consumerName,
             consumerQuery.keyword
@@ -123,7 +123,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     override fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<ConsumerResponse> {
-        val like = KtQueryWrapper(OrderRecords()).like(
+        val like = KtQueryWrapper(OrderRecords::class.java).like(
             consumerQueryPage.keyword != null,
             OrderRecords::consumerName,
             consumerQueryPage.keyword
@@ -191,20 +191,21 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     override fun saveOrder(orderSaveRequest: OrderSaveRequest): Boolean {
         loggger.info("同步订单请求:${orderSaveRequest}")
         val orderId = orderSaveRequest.orderId
-        if (getBaseMapper().selectList(KtQueryWrapper(OrderRecords()).eq(OrderRecords::orderId, orderId))
+        if (getBaseMapper().selectList(KtQueryWrapper(OrderRecords::class.java).eq(OrderRecords::orderId, orderId))
                 .isNotEmpty()
         ) {
             throw ClientException(ResultCode.DATA_ALREADY_EXISTS)
         }
         val orderRecords = orderConverter.toOrderRecords(orderSaveRequest)
-
+        orderRecords.notifyStatus = 0
+        orderRecords.billingStatus = 0
         return save(orderRecords)
     }
 
     override fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean {
         loggger.info("确认开票请求:${confirmBillingRequest}")
         val selectList = getBaseMapper().selectList(
-            KtQueryWrapper(OrderRecords()).eq(
+            KtQueryWrapper(OrderRecords::class.java).eq(
                 OrderRecords::orderId,
                 confirmBillingRequest.orderId
             )
@@ -233,35 +234,8 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         }) { url: String, byId: OrderRecords ->
             byId.updateTime = Instant.now().epochSecond
             byId.billingUrl = url
-            //默认成功
-            byId.notifyStatus = 2
             //更新db
             val saveOrUpdate = saveOrUpdate(byId)
-            if (saveOrUpdate) {
-                //通知
-                val notifyUrl = byId.notifyUrl
-                //3. 通知更新开票状态
-                val apply = NotifyBillingRequest().apply {
-                    byId.orderId
-                    BillingStatusEnum.INVOICED.code
-                    byId.billingUrl
-                }
-                try {
-                    val notifyResult = asyncNotifyBillingTask.notifyBilling(notifyUrl, apply)
-                    if (notifyResult) {
-                        loggger.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
-                    } else {
-                        loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
-                        //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
-                        updateFailStatus(byId.id, 2)
-                    }
-                } catch (e: Exception) {
-                    //请求失败
-                    loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
-                    //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
-                    updateFailStatus(byId.id, 2)
-                }
-            }
         }
         return true
     }
@@ -269,7 +243,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     override fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse> {
         val selectPage = getBaseMapper().selectPage(
             Page(consumerQueryPage.page.current.toLong(), consumerQueryPage.page.size.toLong()),
-            KtQueryWrapper(OrderRecords()).eq(OrderRecords::consumerName, consumerQueryPage.keyword)
+            KtQueryWrapper(OrderRecords::class.java).eq(OrderRecords::consumerName, consumerQueryPage.keyword)
         )
         return PageInfo<OrderResponse>().apply {
             current = selectPage.current.toInt()
@@ -310,6 +284,36 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         polyline.series = seriesDataList
         polyline.xAxisData = polyline.getMonthList(6)
         return polyline
+    }
+
+    override fun confirmNotify(id: Long): Boolean {
+        val byId = getBaseMapper().selectById(id)
+        //通知
+        val notifyUrl = byId.notifyUrl
+        byId.notifyStatus = 1
+        updateById(byId)
+        //3. 通知更新开票状态
+        val apply = NotifyBillingRequest().apply {
+            byId.orderId
+            BillingStatusEnum.INVOICED.code
+            byId.billingUrl
+        }
+        try {
+            val notifyResult = asyncNotifyBillingTask.notifyBilling(notifyUrl, apply)
+            if (notifyResult) {
+                loggger.error("SUCCESS-通知数字账户更新开票状态成功:${apply}")
+            } else {
+                loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+                //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
+                updateFailStatus(byId.id, 2)
+            }
+        } catch (e: Exception) {
+            //请求失败
+            loggger.error("ERROR-通知数字账户更新开票状态失败:${apply}")
+            //更新通知状态为失败 票据状态通知状态[0:未通知 1:通知成功 2:通知失败]
+            updateFailStatus(byId.id, 2)
+        }
+        return true
     }
 
     private fun updateFailStatus(id: Long?, status: Int) {

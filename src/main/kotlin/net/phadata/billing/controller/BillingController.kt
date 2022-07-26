@@ -8,11 +8,7 @@ import net.phadata.billing.model.order.OrderQueryPage
 import net.phadata.billing.model.order.OrderResponse
 import net.phadata.billing.service.OrderRecordsService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -36,5 +32,11 @@ class BillingController {
         @RequestParam("id") id: Long
     ): ApiResult<Boolean> {
         return ApiResult.success(orderRecordsService.upload(file, id))
+    }
+
+    @ApiOperation(value = "确认并通知", notes = "确认并通知")
+    @GetMapping("confirm-notify")
+    fun confirmNotify(@RequestParam("id") id: Long): ApiResult<Boolean> {
+        return ApiResult.success(orderRecordsService.confirmNotify(id))
     }
 }

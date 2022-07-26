@@ -57,7 +57,7 @@ class OrderSaveRequest {
     @ApiModelProperty(value = "客户企业社会统一信用代码，开普票的时候使用")
     var consumerCompanyCode: String? = null
 
-    @NotBlank(message = "支付类型不能为空")
+    //@NotBlank(message = "支付类型不能为空")
     @ApiModelProperty(value = "支付类型")
     var payType: PayTypeEnum? = null
 }

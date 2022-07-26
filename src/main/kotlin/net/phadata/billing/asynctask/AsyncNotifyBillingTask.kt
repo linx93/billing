@@ -20,7 +20,7 @@ class AsyncNotifyBillingTask {
 
 
     @Async
-    fun notifyBilling(notifyUrl: String, notifyBillingRequest: NotifyBillingRequest): Boolean {
+    fun notifyBilling(notifyUrl: String?, notifyBillingRequest: NotifyBillingRequest): Boolean {
         return billingServerApi.notifyBilling(notifyUrl, notifyBillingRequest) == true
     }
 }
