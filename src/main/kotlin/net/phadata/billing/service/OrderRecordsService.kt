@@ -34,7 +34,7 @@ interface OrderRecordsService : IService<OrderRecords> {
     fun payAmountProp(): List<DonutChart>
     fun saveOrder(orderSaveRequest: OrderSaveRequest): Boolean
     fun confirmBilling(confirmBillingRequest: ConfirmBillingRequest): Boolean
-    fun upload(file: MultipartFile, id: Long): Boolean
+    fun upload(file: MultipartFile, id: Long): String
     fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse>
     fun platformPayTrend(): Polyline
     fun payCustomerTrend(): Polyline

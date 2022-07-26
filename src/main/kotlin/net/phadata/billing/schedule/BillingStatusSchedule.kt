@@ -19,7 +19,7 @@ class BillingStatusSchedule {
     lateinit var orderRecordsMapper: OrderRecordsMapper
     private val log = LoggerFactory.getLogger(BillingStatusSchedule::class.java)
 
-    @Scheduled(cron = "0 0 2 * * ?")
+    //@Scheduled(cron = "0 0 2 * * ?")
     fun billingStatus() {
         val list = orderRecordsMapper.selectList(Wrappers.emptyWrapper())
         list.forEach {

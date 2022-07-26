@@ -30,7 +30,7 @@ class BillingController {
     fun uploadBilling(
         @RequestParam("file") file: MultipartFile,
         @RequestParam("id") id: Long
-    ): ApiResult<Boolean> {
+    ): ApiResult<String> {
         return ApiResult.success(orderRecordsService.upload(file, id))
     }
 

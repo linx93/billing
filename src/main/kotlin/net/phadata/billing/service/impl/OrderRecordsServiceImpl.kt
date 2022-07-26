@@ -224,8 +224,8 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
     }
 
     @Transactional
-    override fun upload(file: MultipartFile, id: Long): Boolean {
-        CompletableFuture.supplyAsync {
+    override fun upload(file: MultipartFile, id: Long): String {
+        /*CompletableFuture.supplyAsync {
             //1. 上传
             return@supplyAsync upload(file)
         }.thenCombine(CompletableFuture.supplyAsync {
@@ -236,8 +236,14 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
             byId.billingUrl = url
             //更新db
             val saveOrUpdate = saveOrUpdate(byId)
-        }
-        return true
+        }*/
+        val url = upload(file)
+        val byId = getById(id)
+        byId.updateTime = Instant.now().epochSecond
+        byId.billingUrl = url
+        //更新db
+        val saveOrUpdate = saveOrUpdate(byId)
+        return url
     }
 
     override fun consumerDetails(consumerQueryPage: ConsumerQueryPage): PageInfo<OrderResponse> {

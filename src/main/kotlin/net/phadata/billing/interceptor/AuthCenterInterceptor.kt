@@ -1,6 +1,7 @@
 package net.phadata.billing.interceptor
 
 import net.phadata.billing.exception.ServiceException
+import net.phadata.billing.network.AuthCenterServerApi
 import net.phadata.billing.utils.AuthCenterUtil
 import net.phadata.billing.utils.CommonUtil
 import org.apache.commons.lang3.StringUtils
@@ -21,8 +22,8 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 class AuthCenterInterceptor : HandlerInterceptor {
-    //@Autowired
-
+    @Autowired
+    lateinit var authCenterServerApi: AuthCenterServerApi
     private val log = LoggerFactory.getLogger(AuthCenterInterceptor::class.java)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -34,10 +35,17 @@ class AuthCenterInterceptor : HandlerInterceptor {
         var authToken: String? = request.getHeader(AuthCenterUtil.token)
         if (StringUtils.isBlank(authToken)) {
             log.error("token不能为空")
+            //todo 打开
             //throw ServiceException("token不能为空")
         }
         //去鉴权中校验token
-
+        var verifyToken = true
+        if (authToken != null) {
+            verifyToken = authCenterServerApi.verifyToken(authToken)
+        }
+        if (!verifyToken) {
+            return false
+        }
         return super.preHandle(request, response, handler)
     }
 }
