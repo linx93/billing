@@ -26,7 +26,12 @@ abstract class OrderConverter {
             Mapping(
                 source = "orderRecords.billingStatus",
                 target = "billingStatus",
-                qualifiedByName = ["parseBillingStatus"]
+                qualifiedByName = ["parseBillingStatus"],
+            ),
+            Mapping(
+                source = "orderRecords.payType",
+                target = "payType",
+                qualifiedByName = ["parsePayType"],
             )
         ]
     )
@@ -52,6 +57,17 @@ abstract class OrderConverter {
             1 -> "开票中"
             2 -> "已开票"
             else -> "错误"
+        }
+    }
+
+    @Named("parsePayType")
+    protected fun parsePayType(payType: String): String {
+        //支付类型  alipay, wxpay, paypal
+        return when (payType) {
+            "alipay" -> "支付宝"
+            "wxpay" -> "微信"
+            "paypal" -> "paypal"
+            else -> "未知"
         }
     }
 
