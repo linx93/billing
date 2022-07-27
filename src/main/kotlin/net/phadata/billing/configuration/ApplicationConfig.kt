@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor
 import net.phadata.billing.interceptor.AuthCenterInterceptor
 import net.phadata.billing.interceptor.TokenInterceptor
+import net.phadata.billing.network.AuthCenterServerApi
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -20,6 +22,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
  */
 @Configuration
 class ApplicationConfig : WebMvcConfigurer {
+
+    @Autowired
+    lateinit var authCenterServerApi: AuthCenterServerApi
+
     /**
      * 注册自定义拦截器
      */
@@ -36,7 +42,7 @@ class ApplicationConfig : WebMvcConfigurer {
                 "/api/v1/excel/download-consumer",
                 "/api/v1/excel/download-order"
             )
-        registry.addInterceptor(AuthCenterInterceptor())
+        registry.addInterceptor(AuthCenterInterceptor(authCenterServerApi))
             .addPathPatterns("/open/v1/**")
             .excludePathPatterns()
     }

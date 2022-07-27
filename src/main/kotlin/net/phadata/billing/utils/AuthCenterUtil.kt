@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 object AuthCenterUtil {
     //鉴权中心的token
-    const val token: String = "token"
+    const val TOKEN: String = "token"
     private const val BASE = "abcdefghijklmnopqrstuvwxyz0123456789"
     fun getSign(appKey: String?, appSecret: String, rand: String?, timestamp: String?): String {
         // 有随机数的签名

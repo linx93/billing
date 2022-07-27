@@ -2,7 +2,6 @@ package net.phadata.billing.network.impl
 
 import net.phadata.billing.exception.ServiceException
 import net.phadata.billing.interceptor.TokenInterceptor
-import net.phadata.billing.model.api.ApiResult
 import net.phadata.billing.model.auth.CreateTokenResponse
 import net.phadata.billing.model.auth.VerifyTokenResponse
 import net.phadata.billing.network.AuthCenterServerApi
@@ -70,7 +69,7 @@ class AuthCenterServerApiImpl : AuthCenterServerApi, BaseServerApi() {
 
     override fun verifyToken(token: String): Boolean {
         val httpHeaders = HttpHeaders().apply {
-            add(AuthCenterUtil.token, token)
+            add(AuthCenterUtil.TOKEN, token)
         }
         val httpEntity = HttpEntity(null, httpHeaders)
         val str = restTemplate.postForObject(

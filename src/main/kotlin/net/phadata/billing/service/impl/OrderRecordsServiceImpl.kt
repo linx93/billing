@@ -99,7 +99,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
             OrderRecords::payTime,
             orderQueryPage.timeRange?.startTime,
             orderQueryPage.timeRange?.endTime
-        )
+        ).orderByDesc(OrderRecords::createTime)
         val selectPage = getBaseMapper().selectPage(
             Page(
                 orderQueryPage.page.current.toLong(), orderQueryPage.page.size.toLong()
@@ -115,7 +115,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
 
     override fun listByConsumerQuery(consumerQuery: ConsumerQuery): List<DownloadConsumer> {
         val like = KtQueryWrapper(OrderRecords::class.java).like(
-            consumerQuery.keyword != null,
+            StringUtils.isNotBlank(consumerQuery.keyword),
             OrderRecords::consumerName,
             consumerQuery.keyword
         )
@@ -125,7 +125,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
 
     override fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<ConsumerResponse> {
         val like = KtQueryWrapper(OrderRecords::class.java).like(
-            consumerQueryPage.keyword != null,
+            StringUtils.isNotBlank(consumerQueryPage.keyword),
             OrderRecords::consumerName,
             consumerQueryPage.keyword
         )
@@ -146,11 +146,12 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
                 this.amountSum = amountSum
             })
         }
+        consumerResponseList.sortByDescending { item -> item.amountSum }
         //分页计算
         val total = consumerResponseList.size
         val pageSize = consumerQueryPage.page.size
-        val current = consumerQueryPage.page.current - 1
-        //一共的页数
+        val current = consumerQueryPage.page.current
+        /*//一共的页数
         var pageTotal = ceil(total.toDouble() / pageSize).toInt()
         if (pageTotal > 0) {
             pageTotal -= 1
@@ -169,9 +170,22 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
             arrayListOf()
         } else {
             consumerResponseList.slice(IntRange(start, to - 1))
+        }*/
+        var slice = mutableListOf<ConsumerResponse>()
+        if (pageSize >= total) {
+            slice = consumerResponseList
+        } else {
+            val start: Int = (current - 1) * pageSize
+            val end: Int = current * pageSize
+            for ((index, value) in consumerResponseList.withIndex()) {
+                //println("the element at $index is $value")
+                if (index in start until end) {
+                    slice.add(value)
+                }
+            }
         }
         return PageInfo<ConsumerResponse>().apply {
-            this.current = current + 1
+            this.current = current
             this.size = pageSize
             this.total = total
             this.records = slice
@@ -293,7 +307,7 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         return polyline
     }
 
-    //@Transactional
+    @Transactional
     override fun confirmNotify(id: Long): Boolean {
         val byId = getBaseMapper().selectById(id)
         //通知
@@ -332,7 +346,6 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
         }
         return true
     }
-
 
 
     private fun upload(file: MultipartFile): String {

@@ -2,9 +2,14 @@ package net.phadata.billing.network.impl
 
 import net.phadata.billing.exception.ServiceException
 import net.phadata.billing.model.billing.NotifyBillingRequest
+import net.phadata.billing.network.AuthCenterServerApi
 import net.phadata.billing.network.BaseServerApi
 import net.phadata.billing.network.BillingServerApi
+import net.phadata.billing.utils.AuthCenterUtil
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 
 
@@ -16,6 +21,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class BillingServerApiImpl : BaseServerApi(), BillingServerApi {
+
+    @Autowired
+    lateinit var authCenterServerApi: AuthCenterServerApi
 
     private val url = ""
 
@@ -30,7 +38,11 @@ class BillingServerApiImpl : BaseServerApi(), BillingServerApi {
         if (url == null) {
             throw ServiceException("url为空")
         }
-        val resultStr = restTemplate.postForObject(url, params, String::class.java)
+        val httpHeaders = HttpHeaders().apply {
+            add(AuthCenterUtil.TOKEN, authCenterServerApi.createToken())
+        }
+        val httpEntity = HttpEntity(params, httpHeaders)
+        val resultStr = restTemplate.postForObject(url, httpEntity, String::class.java)
         val buildApiResult = buildApiResult(resultStr, Boolean::class.java)
         if (buildApiResult.code != "200000") {
             throw ServiceException("通知失败:${buildApiResult}")
