@@ -11,7 +11,6 @@
     <groupId>net.phadata</groupId>
     <artifactId>billing</artifactId>
     <version>0.0.1</version>
-    <packaging>war</packaging>
     <name>billing-management-system</name>
     <description>天机计费管理系统</description>
     <properties>
