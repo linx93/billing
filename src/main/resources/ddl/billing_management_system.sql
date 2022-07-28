@@ -15,7 +15,7 @@
 */
 
 
-create schema billing_management_system collate utf8mb4_general_ci
+create schema billing_management_system collate utf8mb4_general_ci;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
