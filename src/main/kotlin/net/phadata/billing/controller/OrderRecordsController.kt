@@ -59,7 +59,9 @@ class OrderRecordsController {
             //mapOf[tjPlatformEnum.code] = tjPlatformEnum.getName()
             mapOf["code"] = tjPlatformEnum.code
             mapOf["name"] = tjPlatformEnum.getName()
-            listOf.add(mapOf)
+            if (tjPlatformEnum.code.equals("CompanyDigitalAccount")||tjPlatformEnum.code.equals("PersonalDigitalAccount")){
+                listOf.add(mapOf)
+            }
         }
         return ApiResult.success(listOf)
     }

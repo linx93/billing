@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter
 abstract class OrderConverter {
     @Mappings(
         value = [
-            Mapping(target = "billingUrl", ignore = true),
+            //Mapping(target = "billingUrl", ignore = true),
             Mapping(
                 source = "orderRecords.payTime",
                 target = "payTime",
@@ -50,7 +50,7 @@ abstract class OrderConverter {
 
     abstract fun toDownloadConsumer(orderRecords: OrderRecords): DownloadConsumer
 
-    abstract fun toDownloadConsumerList(orderRecords: List<OrderRecords>): List<DownloadConsumer>
+    abstract fun toDownloadConsumerList(orderRecords: List<ConsumerResponse>): List<DownloadConsumer>
 
     abstract fun toOrderResponse(records: List<OrderRecords>): List<OrderResponse>
 

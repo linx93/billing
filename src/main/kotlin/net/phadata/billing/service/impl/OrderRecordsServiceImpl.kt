@@ -119,8 +119,24 @@ class OrderRecordsServiceImpl : ServiceImpl<OrderRecordsMapper, OrderRecords>(),
             OrderRecords::consumerName,
             consumerQuery.keyword
         )
-        val selectList = getBaseMapper().selectList(like)
-        return orderConverter.toDownloadConsumerList(selectList)
+        val groupBy = getBaseMapper().selectList(like).groupBy(OrderRecords::consumerName)
+        val consumerResponseList = mutableListOf<ConsumerResponse>()
+        groupBy.forEach { element ->
+            var amountSum = BigDecimal("0")
+            var consumerName: String? = ""
+            var consumerCompanyCode: String? = ""
+            element.value.forEach { item ->
+                amountSum = amountSum.add(item.amount)
+                consumerName = item.consumerName
+                consumerCompanyCode = item.consumerCompanyCode
+            }
+            consumerResponseList.add(ConsumerResponse().apply {
+                this.consumerName = consumerName
+                this.consumerCompanyCode = consumerCompanyCode
+                this.amountSum = amountSum
+            })
+        }
+        return orderConverter.toDownloadConsumerList(consumerResponseList)
     }
 
     override fun pageByConsumerQueryPage(consumerQueryPage: ConsumerQueryPage): PageInfo<ConsumerResponse> {
