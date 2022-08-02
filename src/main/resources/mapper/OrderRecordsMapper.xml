@@ -27,7 +27,7 @@
     </select>
 
     <select id="payAmountProp" resultType="net.phadata.billing.model.statistics.DonutChart">
-        select IFNULL(SUM(amount), 0) as `value`, amount as `name`
+        select IFNULL(COUNT(amount), 0) as `value`, amount as `name`
         from order_records
         group by amount
     </select>
