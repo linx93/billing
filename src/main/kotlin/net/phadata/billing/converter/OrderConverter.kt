@@ -10,6 +10,10 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
 import org.mapstruct.Named
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -23,6 +27,11 @@ abstract class OrderConverter {
     @Mappings(
         value = [
             Mapping(target = "billingUrl", ignore = true),
+            Mapping(
+                source = "orderRecords.payTime",
+                target = "payTime",
+                qualifiedByName = ["toDateString"],
+            ),
             Mapping(
                 source = "orderRecords.billingStatus",
                 target = "billingStatus",
@@ -69,6 +78,13 @@ abstract class OrderConverter {
             "paypal" -> "paypal"
             else -> "未知"
         }
+    }
+
+
+    @Named("toDateString")
+    protected fun toDateString(p: java.lang.Long): String {
+        val ofPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        return ofPattern.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(p.toLong()), ZoneId.systemDefault()))
     }
 
 

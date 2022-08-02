@@ -24,7 +24,7 @@ class DownloadOrder {
     var amount: BigDecimal? = null
 
     @ExcelProperty("支付时间")
-    var payTime: Long? = null
+    var payTime: String? = null
 
     @ColumnWidth(20)
     @ExcelProperty("支付类型")
