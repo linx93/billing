@@ -119,6 +119,14 @@
             <artifactId>phadata-java-common</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <!--腾讯sms-->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java</artifactId>
+            <!-- go to https://search.maven.org/search?q=tencentcloud-sdk-java and get the latest version. -->
+            <!-- 请到https://search.maven.org/search?q=tencentcloud-sdk-java查询所有版本，最新版本如下 -->
+            <version>3.1.545</version>
+        </dependency>
     </dependencies>
 
     <repositories>

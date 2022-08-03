@@ -109,3 +109,13 @@ authCenter:
 #  checkTokenUrl: https://auth.tdaas.test.phadata.net/serverurl
 #  appKey: c6eqeg86n88ntl74pet0
 #  appSecret: c6eqeg86n88ntl74pesg
+
+#腾讯短信服务
+tencent:
+  sms:
+    secret-id: AKIDwiHacNt8GBpDKAj23nGSN0MRFEwNXQ2N
+    secret-key: 7xVmmW2HFxPaU8VbPwDF0UifLjriIbdP
+    template:
+      invoice-notice:
+        id: "1496419"
+        text: "{1}您好，您的发票已经开具完成，请前往{2}可信数字账户平台查看。"
