@@ -117,5 +117,5 @@ tencent:
     secret-key: 7xVmmW2HFxPaU8VbPwDF0UifLjriIbdP
     template:
       invoice-notice:
-        id: "1496419"
-        text: "{1}您好，您的发票已经开具完成，请前往{2}可信数字账户平台查看。"
+        id: "1497038"
+        text: "{1}您好，您的电子票据已经开具完成，请前往{2}可信数字账户平台查看。"
