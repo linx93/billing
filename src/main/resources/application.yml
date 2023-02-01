@@ -113,8 +113,8 @@ authCenter:
 #腾讯短信服务
 tencent:
   sms:
-    secret-id: AKIDwiHacNt8GBpDKAj23nGSN0MRFEwNXQ2N
-    secret-key: 7xVmmW2HFxPaU8VbPwDF0UifLjriIbdP
+    secret-id: AKIDwiHacNt8GBpDKAj23nGSN0MRFEwNXQ2NLINX
+    secret-key: 7xVmmW2HFxPaU8VbPwDF0UifLjriIbdPLINX
     template:
       invoice-notice:
         id: "1497038"
